@@ -60,3 +60,12 @@ export async function getVideoDetails(
     })
     .catch((err) => Promise.reject(err));
 }
+
+async function main() {
+  const videoDetail = await getVideoDetails("https://www.youtube.com/watch?v=8Px6vlwbAkU")
+  console.log(videoDetail.hasOwnProperty("videoTitle"))
+}
+
+main()
+
+

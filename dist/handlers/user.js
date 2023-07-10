@@ -18,7 +18,7 @@ class HandlerUser {
         if (!username || !name || !password) {
             return res
                 .status(400)
-                .json({ error: "missing username or name or password in body" });
+                .json({ error: "missing username or name or password in body", statusCode: 401 });
         }
         return this.repo
             .createUser({
@@ -37,6 +37,22 @@ class HandlerUser {
             return res.status(500).json({ error: errMsg }).end();
         });
     }
+    async getId(req, res) {
+        if (!req.payload.id) {
+            return res
+                .status(400)
+                .json({ error: "wrong username or password" });
+        }
+        console.log(req.payload.id);
+        return this.repo.getId(req.payload.id).then((user) => res.status(200).json(user))
+            .catch((err) => {
+            const errMsg = `failed to get id`;
+            console.error(`${errMsg}: ${err}`);
+            return res
+                .status(500)
+                .json({ error: `failed to get id` });
+        });
+    }
     async login(req, res) {
         const { username, password } = req.body;
         if (!username || !password) {
@@ -48,7 +64,7 @@ class HandlerUser {
             .getUserByUsername(username)
             .then((user) => {
             if (!user) {
-                return res.status(404).json({ error: `no such user: ${username}` });
+                return res.status(404).json({ error: `no such user: ${username}`, statusCode: 401 });
             }
             if (!(0, bcrypts_1.compareHash)(password, user.password)) {
                 return res.status(401).json({ error: `invalid credentail` });
@@ -61,7 +77,7 @@ class HandlerUser {
                 username: user.username,
                 name: user.name,
                 registeredAt: user.registeredAt,
-                token,
+                accessToken: token,
             });
         })
             .catch((err) => {

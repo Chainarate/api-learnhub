@@ -26,6 +26,10 @@ export interface IHandlerUser {
   logout(req: JwtAuthRequest<Empty, Empty>, res: Response): Promise<Response>;
   login(req: AppRequest<Empty, WithUser>, res: Response): Promise<Response>;
   register(req: AppRequest<Empty, WithUser>, res: Response): Promise<Response>;
+  getId(
+    req: JwtAuthRequest<Empty, Empty>,
+    res: Response
+  ): Promise<Response>
 }
 
 export interface IHandlerContent {

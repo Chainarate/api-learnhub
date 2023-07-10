@@ -29,16 +29,18 @@ async function main() {
 
   const port = process.env.PORT || 8000;
   const server = express();
-  const userRounter = express.Router();
+  const userRouter = express.Router();
   const contentRouter = express.Router();
+  const authRouter = express.Router()
   const cors = require('cors')
 
   server.use(cors())
   server.use(express.json());
   server.use(express.urlencoded({ extended: false }));
 
-  server.use("/user", userRounter);
+  server.use("/user", userRouter);
   server.use("/content", contentRouter);
+  server.use("/auth", authRouter);
 
   // Check server status
   server.get("/", (_, res) => {
@@ -46,9 +48,10 @@ async function main() {
   });
 
   // User API
-  userRounter.post("/register", handlerUser.register.bind(handlerUser));
-  userRounter.post("/login", handlerUser.login.bind(handlerUser));
-  userRounter.get(
+  userRouter.post("/", handlerUser.register.bind(handlerUser));
+  authRouter.post("/login", handlerUser.login.bind(handlerUser));
+  authRouter.get("/me",  handlerMiddlerware.jwtMiddleware.bind(handlerMiddlerware),handlerUser.getId.bind(handlerUser));
+  authRouter.get(
     "/logout",
     handlerMiddlerware.jwtMiddleware.bind(handlerMiddlerware),
     handlerUser.logout.bind(handlerUser)
@@ -60,6 +63,7 @@ async function main() {
     handlerMiddlerware.jwtMiddleware.bind(handlerMiddlerware),
     handlerContent.createContent.bind(handlerContent)
   );
+  // (Optional) Add usercontent
   contentRouter.get(
     "/usercontent",
     handlerMiddlerware.jwtMiddleware.bind(handlerMiddlerware),
@@ -67,11 +71,11 @@ async function main() {
   );
   contentRouter.get("/", handlerContent.getContents.bind(handlerContent));
   contentRouter.get("/:id", handlerContent.getContentById.bind(handlerContent));
-  contentRouter.post("/update", async (_, res) => {
-    return res.status(400).json({ error: "missing params id" }).end();
-  });
-  contentRouter.post(
-    "/update/:id",
+  // contentRouter.post("/update", async (_, res) => {
+  //   return res.status(400).json({ error: "missing params id" }).end();
+  // });
+  contentRouter.patch(
+    "/:id",
     handlerMiddlerware.jwtMiddleware.bind(handlerMiddlerware),
     handlerContent.updateContent.bind(handlerContent)
   );

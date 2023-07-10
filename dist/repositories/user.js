@@ -15,5 +15,8 @@ class RepositoryUser {
     async getUserByUsername(username) {
         return await this.db.user.findUnique({ where: { username } });
     }
+    async getId(id) {
+        return await this.db.user.findUnique({ where: { id } });
+    }
 }
 //# sourceMappingURL=user.js.map

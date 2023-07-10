@@ -5,7 +5,6 @@ import { IRepositoryBlacklist } from "../repositories";
 export interface Payload {
   id: string;
   username: string;
-  name: string
 }
 
 const secret = "content-secret";

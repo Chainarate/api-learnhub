@@ -5,13 +5,6 @@ export interface ICreateUser {
   registeredAt: Date;
 }
 
-interface UserDto {
-  id: string
-  username: string
-  name: string
-  registeredAt: string
-}
-
 export interface IUser extends ICreateUser {
   id: string;
 }
@@ -27,7 +20,6 @@ export interface ICreateContent {
   createdAt: Date | string;
   updatedAt: Date | string;
   userId: string;
-  //postedBy: UserDto
 }
 
 export interface IContent extends ICreateContent {

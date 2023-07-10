@@ -31,7 +31,7 @@ class HandlerUser implements IHandlerUser {
     if (!username || !name || !password) {
       return res
         .status(400)
-        .json({ error: "missing username or name or password in body" });
+        .json({ error: "missing username or name or password in body", statusCode: 401 });
     }
 
     return this.repo
@@ -55,6 +55,30 @@ class HandlerUser implements IHandlerUser {
       });
   }
 
+  async getId(
+    req: JwtAuthRequest<Empty, Empty>,
+    res: Response
+  ): Promise<Response>{
+
+    if (!req.payload.id) {
+      return res
+      .status(400)
+      .json({ error: "wrong username or password" });
+    }
+
+    console.log(req.payload.id)
+
+    return this.repo.getId(req.payload.id).then((user)=>res.status(200).json(user))
+    .catch((err) => {
+      const errMsg = `failed to get id`;
+      console.error(`${errMsg}: ${err}`);
+
+      return res
+        .status(500)
+        .json({ error: `failed to get id` });
+    });
+  }
+
   async login(
     req: AppRequest<Empty, WithUser>,
     res: Response
@@ -70,7 +94,7 @@ class HandlerUser implements IHandlerUser {
       .getUserByUsername(username)
       .then((user) => {
         if (!user) {
-          return res.status(404).json({ error: `no such user: ${username}` });
+          return res.status(404).json({ error: `no such user: ${username}`, statusCode: 401 });
         }
 
         if (!compareHash(password, user.password)) {
@@ -86,7 +110,7 @@ class HandlerUser implements IHandlerUser {
           username: user.username,
           name: user.name,
           registeredAt: user.registeredAt,
-          token,
+          accessToken : token,
         });
       })
       .catch((err) => {

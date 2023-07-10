@@ -12,10 +12,10 @@ class HandlerContent {
     }
     async createContent(req, res) {
         const { videoUrl, comment, rating } = req.body;
-        if (!videoUrl || !comment || !rating) {
+        if (!videoUrl) {
             return res
                 .status(400)
-                .json({ error: "missing videoUrl or comment or rating in json body" })
+                .json({ error: "missing videoUrl rating in json body" })
                 .end();
         }
         if (rating < 0 && rating > 5) {
@@ -50,7 +50,7 @@ class HandlerContent {
     async getContents(_, res) {
         return this.repo
             .getContents()
-            .then((contents) => res.status(200).json(contents).end())
+            .then((contents) => res.status(200).json({ data: contents }).end())
             .catch((err) => {
             console.error(`failed to get content: ${err}`);
             return res.status(500).json({ error: `failed to get contents` }).end();
@@ -98,6 +98,7 @@ class HandlerContent {
                 .json({ error: `id ${req.params.id} is not a number` });
         }
         const { comment, rating } = req.body;
+        console.log(comment, rating);
         if (!comment || !rating) {
             return res
                 .status(400)

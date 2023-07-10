@@ -34,10 +34,32 @@ class RepositoryContent {
         });
     }
     async getContents() {
-        return await this.db.content.findMany();
+        return await this.db.content.findMany({
+            include: {
+                postedBy: {
+                    select: {
+                        id: true,
+                        username: true,
+                        name: true,
+                        registeredAt: true,
+                        password: false,
+                    },
+                },
+            }
+        });
     }
     async getContentById(id) {
-        return await this.db.content.findUnique({ where: { id } });
+        return await this.db.content.findUnique({ where: { id }, include: {
+                postedBy: {
+                    select: {
+                        id: true,
+                        username: true,
+                        name: true,
+                        registeredAt: true,
+                        password: false,
+                    },
+                },
+            } });
     }
     async getUserContents(userId) {
         return await this.db.content.findMany({ where: { userId } });
