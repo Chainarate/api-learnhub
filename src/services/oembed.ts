@@ -62,10 +62,10 @@ export async function getVideoDetails(
 }
 
 async function main() {
-  const videoDetail = await getVideoDetails("https://www.youtube.com/watch?v=8Px6vlwbAkU")
-  console.log(videoDetail.hasOwnProperty("videoTitle"))
+  const videoDetail = await getVideoDetails(
+    "https://www.youtube.com/watch?v=8Px6vlwbAkU"
+  );
+  console.log(videoDetail.hasOwnProperty("videoTitle"));
 }
 
-main()
-
-
+main();

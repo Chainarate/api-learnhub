@@ -1,11 +1,7 @@
 import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { IRepositoryBlacklist } from "../repositories";
-
-export interface Payload {
-  id: string;
-  username: string;
-}
+import { JwtAuthRequest, Payload } from ".";
 
 const secret = "content-secret";
 
@@ -17,12 +13,6 @@ export function newJwt(data: Payload): string {
     subject: "registration",
     audience: "user",
   });
-}
-
-export interface JwtAuthRequest<Params, Body>
-  extends Request<Params, any, Body> {
-  token: string;
-  payload: Payload;
 }
 
 export function newHandlerMiddlerware(

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { JwtAuthRequest } from "../auth/jwt";
+import { JwtAuthRequest } from "../auth/index";
 
 export interface AppRequest<Params, Body> extends Request<Params, any, Body> {}
 
@@ -26,10 +26,7 @@ export interface IHandlerUser {
   logout(req: JwtAuthRequest<Empty, Empty>, res: Response): Promise<Response>;
   login(req: AppRequest<Empty, WithUser>, res: Response): Promise<Response>;
   register(req: AppRequest<Empty, WithUser>, res: Response): Promise<Response>;
-  getId(
-    req: JwtAuthRequest<Empty, Empty>,
-    res: Response
-  ): Promise<Response>
+  getId(req: JwtAuthRequest<Empty, Empty>, res: Response): Promise<Response>;
 }
 
 export interface IHandlerContent {

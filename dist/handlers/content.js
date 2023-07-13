@@ -18,7 +18,7 @@ class HandlerContent {
                 .json({ error: "missing videoUrl rating in json body" })
                 .end();
         }
-        if (rating < 0 && rating > 5) {
+        if (rating > 0 && rating < 5) {
             return res.status(400).json({ error: "rating 0-5" }).end();
         }
         const userId = req.payload.id;
@@ -38,7 +38,7 @@ class HandlerContent {
             updatedAt,
             userId,
         })
-            .then((todo) => res.status(201).json(todo).end())
+            .then((content) => res.status(201).json(content).end())
             .catch((err) => {
             console.error(`failed to create todo: ${err}`);
             return res

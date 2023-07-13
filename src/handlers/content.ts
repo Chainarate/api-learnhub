@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { IRepositoryContent } from "../repositories";
 import { Empty, IHandlerContent, WithContent, WithContentId } from ".";
-import { JwtAuthRequest } from "../auth/jwt";
+import { JwtAuthRequest } from "../auth/index";
 import { getVideoDetails } from "../services/oembed";
 
 export function newHandlerContent(
@@ -34,7 +34,7 @@ class HandlerContent implements IHandlerContent {
       return res.status(400).json({ error: "rating 0-5" }).end();
     }
 
-    const userId = req.payload.id
+    const userId = req.payload.id;
     const createdAt = new Date();
     const updatedAt = new Date();
 
@@ -54,7 +54,7 @@ class HandlerContent implements IHandlerContent {
         updatedAt,
         userId,
       })
-      .then((todo) => res.status(201).json(todo).end())
+      .then((content) => res.status(201).json(content).end())
       .catch((err) => {
         console.error(`failed to create todo: ${err}`);
         return res
@@ -67,7 +67,7 @@ class HandlerContent implements IHandlerContent {
   async getContents(_, res: Response): Promise<Response> {
     return this.repo
       .getContents()
-      .then((contents) => res.status(200).json({data: contents}).end())
+      .then((contents) => res.status(200).json({ data: contents }).end())
       .catch((err) => {
         console.error(`failed to get content: ${err}`);
         return res.status(500).json({ error: `failed to get contents` }).end();
@@ -130,7 +130,7 @@ class HandlerContent implements IHandlerContent {
         .json({ error: `id ${req.params.id} is not a number` });
     }
     const { comment, rating } = req.body;
-    console.log(comment, rating)
+    console.log(comment, rating);
 
     if (!comment || !rating) {
       return res

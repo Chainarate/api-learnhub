@@ -3,7 +3,8 @@ import { Response } from "express";
 import { AppRequest, Empty, IHandlerUser, WithUser } from ".";
 import { IRepositoryBlacklist, IRepositoryUser } from "../repositories";
 import { compareHash, hashPassword } from "../auth/bcrypts";
-import { JwtAuthRequest, Payload, newJwt } from "../auth/jwt";
+import { newJwt } from "../auth/jwt";
+import { JwtAuthRequest, Payload } from "../auth";
 
 export function newHandlerUser(
   repo: IRepositoryUser,
@@ -29,9 +30,10 @@ class HandlerUser implements IHandlerUser {
     const registeredAt = new Date();
 
     if (!username || !name || !password) {
-      return res
-        .status(400)
-        .json({ error: "missing username or name or password in body", statusCode: 401 });
+      return res.status(400).json({
+        error: "missing username or name or password in body",
+        statusCode: 401,
+      });
     }
 
     return this.repo
@@ -58,25 +60,22 @@ class HandlerUser implements IHandlerUser {
   async getId(
     req: JwtAuthRequest<Empty, Empty>,
     res: Response
-  ): Promise<Response>{
-
+  ): Promise<Response> {
     if (!req.payload.id) {
-      return res
-      .status(400)
-      .json({ error: "wrong username or password" });
+      return res.status(400).json({ error: "wrong username or password" });
     }
 
-    console.log(req.payload.id)
+    console.log(req.payload.id);
 
-    return this.repo.getId(req.payload.id).then((user)=>res.status(200).json(user))
-    .catch((err) => {
-      const errMsg = `failed to get id`;
-      console.error(`${errMsg}: ${err}`);
+    return this.repo
+      .getId(req.payload.id)
+      .then((user) => res.status(200).json(user))
+      .catch((err) => {
+        const errMsg = `failed to get id`;
+        console.error(`${errMsg}: ${err}`);
 
-      return res
-        .status(500)
-        .json({ error: `failed to get id` });
-    });
+        return res.status(500).json({ error: `failed to get id` });
+      });
   }
 
   async login(
@@ -94,7 +93,9 @@ class HandlerUser implements IHandlerUser {
       .getUserByUsername(username)
       .then((user) => {
         if (!user) {
-          return res.status(404).json({ error: `no such user: ${username}`, statusCode: 401 });
+          return res
+            .status(404)
+            .json({ error: `no such user: ${username}`, statusCode: 401 });
         }
 
         if (!compareHash(password, user.password)) {
@@ -104,13 +105,30 @@ class HandlerUser implements IHandlerUser {
         const payload: Payload = { id: user.id, username: user.username };
         const token = newJwt(payload);
 
+        req.session.payload = { id: user.id, username };
+        // session.payload.username = username;
+        // session.username = username;
+        // session.password = password;
+        console.log("1", req.session.payload);
+        // console.log("2", session.payload.username);
+
+        if (req.session.payload) {
+          console.log(req.session);
+          res.send(`Hey there, welcome <a href=\'/logout'>click to logout</a>`);
+        } else {
+          console.log("error");
+          console.log(req.session);
+          console.log(req.session.payload);
+          res.send("Invalid username or password");
+        }
+
         return res.status(200).json({
           status: "logined",
           id: user.id,
           username: user.username,
           name: user.name,
           registeredAt: user.registeredAt,
-          accessToken : token,
+          accessToken: token,
         });
       })
       .catch((err) => {

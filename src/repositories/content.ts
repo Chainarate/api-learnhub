@@ -34,7 +34,7 @@ class RepositoryContent implements IRepositoryContent {
             id: content.userId,
           },
         },
-       },
+      },
     });
   }
 
@@ -50,21 +50,25 @@ class RepositoryContent implements IRepositoryContent {
             password: false,
           },
         },
-      }});
+      },
+    });
   }
 
   async getContentById(id: number): Promise<IContent | null> {
-    return await this.db.content.findUnique({ where: { id },include: {
-      postedBy: {
-        select: {
-          id: true,
-          username: true,
-          name: true,
-          registeredAt: true,
-          password: false,
+    return await this.db.content.findUnique({
+      where: { id },
+      include: {
+        postedBy: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            registeredAt: true,
+            password: false,
+          },
         },
       },
-    } });
+    });
   }
 
   async getUserContents(userId: string): Promise<IContent[]> {

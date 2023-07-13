@@ -3,7 +3,7 @@ import { IContent, ICreateContent, ICreateUser, IUser } from "../entities";
 export interface IRepositoryUser {
   createUser(user: ICreateUser): Promise<IUser>;
   getUserByUsername(username: string): Promise<IUser | null>;
-  getId(id:string): Promise<IUser|null>
+  getId(id: string): Promise<IUser | null>;
 }
 
 export interface IRepositoryContent {

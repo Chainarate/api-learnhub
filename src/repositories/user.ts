@@ -21,8 +21,7 @@ class RepositoryUser implements IRepositoryUser {
     return await this.db.user.findUnique({ where: { username } });
   }
 
-  async getId(id:string): Promise<IUser | null>{
-    return await this.db.user.findUnique({where:{id}})
+  async getId(id: string): Promise<IUser | null> {
+    return await this.db.user.findUnique({ where: { id } });
   }
-
 }

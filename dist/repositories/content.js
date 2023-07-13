@@ -45,11 +45,13 @@ class RepositoryContent {
                         password: false,
                     },
                 },
-            }
+            },
         });
     }
     async getContentById(id) {
-        return await this.db.content.findUnique({ where: { id }, include: {
+        return await this.db.content.findUnique({
+            where: { id },
+            include: {
                 postedBy: {
                     select: {
                         id: true,
@@ -59,7 +61,8 @@ class RepositoryContent {
                         password: false,
                     },
                 },
-            } });
+            },
+        });
     }
     async getUserContents(userId) {
         return await this.db.content.findMany({ where: { userId } });
