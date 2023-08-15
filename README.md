@@ -11,7 +11,7 @@ Video Rating: Users can rate videos using star ratings to provide feedback and h
 Tech Stacks
 The E-Learning Website is built using the following technologies:
 
-Front End: Typescript
+Programming Languages: TypeScript
 Back End: Node.js, Express
 Database: PostgreSQL
 Caching: Redis
